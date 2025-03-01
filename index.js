@@ -123,11 +123,15 @@ const typeDefs = `
 
   type Mutation {
     addBook(
-      title: String,
-      author: String,
-      published: Int,
+      title: String
+      author: String
+      published: Int
       genres: [String]
-    ): Book
+    ): Book,
+    editAuthor(
+      name: String!
+      setToBorn: Int!
+    ): Author
   }
 `
 
@@ -147,6 +151,17 @@ const resolvers = {
       const book = { ...args, id: uuid };
       books = books.concat(book)
       return book
+    },
+    editAuthor: (_, args) => {
+      const author = authors.find(author => author.name === args.name);
+      
+      if (!author) {
+        console.log("Author could not be found")
+        return null
+      } 
+
+      author.born = args.setToBorn
+      return author;
     }
   }
 }
