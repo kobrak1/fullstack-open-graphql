@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/client";
-import { allAuthorsQuery } from "../graphql/queries/authorsQuery";
+import { ALL_AUTHORS_QUERY } from "../graphql/queries/authorsQuery";
 
 const AuthorsTable = ({ authors }) => {
-  const result = useQuery(allAuthorsQuery);
+  const result = useQuery(ALL_AUTHORS_QUERY);
 
   if (result.loading) {
     return <div>Loading...</div>;
