@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { EDIT_BIRTH_YEAR } from "../graphql/mutations/authorsMutation";
 import { ALL_AUTHORS_QUERY } from "../graphql/queries/authorsQuery";
 
 const SetBirthYear = () => {
     const [author, setAuthor] = useState("");
-    const [birthYear, setBirthYear] = useState(0);
+    const [birthYear, setBirthYear] = useState("");
+    const result = useQuery(ALL_AUTHORS_QUERY);
     const [editBirthYear] = useMutation(EDIT_BIRTH_YEAR, {
         refetchQueries: [{ query: ALL_AUTHORS_QUERY }]
     });
@@ -17,8 +18,6 @@ const SetBirthYear = () => {
             setAuthor(value);
         } else {
             setBirthYear(parseInt(value, 10));
-            console.log("Birth year:", value);
-            console.log(typeof value);
         }
     }
 
@@ -39,24 +38,21 @@ const SetBirthYear = () => {
             console.error("Error setting birth year:", error);
         }
     }
-
     return (
         <form onSubmit={handleSubmit} className="flex flex-col mx-auto mt-12">
-            <input
-                type="text"
-                name="author"
-                value={author}
-                onChange={handleChange}
-                placeholder="Author"
-                className="border border-gray-400 p-2 rounded-md mb-4"
-            />
+            <select name="author" value={author} onChange={handleChange} className="border border-gray-600 bg-white p-2 mb-4">
+                <option value="">Select author</option>
+                {result.data.allAuthors.map((author) => (
+                    <option key={author.id} value={author.name} className="border border-white bg-gray-400">{author.name}</option>
+                ))}
+            </select>
             <input
                 type="number"
                 name="birthYear"
                 value={birthYear}
                 onChange={handleChange}
                 placeholder="Birth year"
-                className="border border-gray-400 p-2 rounded-md mb-4"
+                className="border border-gray-600 bg-white p-2 mb-4"
             />
             <button
                 type="submit"
